@@ -147,6 +147,11 @@ const buildEmptyLearningPath = () => ({
 
 export async function learningPathOverviewSvc(user) {
   if (!user) throw new Error('Unauthorized');
+  const userId = Number(user.id);
+  if (!Number.isFinite(userId) || userId <= 0) {
+    // Không xác định được userId hợp lệ -> trả về lộ trình rỗng thay vì lỗi DB
+    return buildEmptyLearningPath();
+  }
   const lessonsRaw = await listPublishedLessonsBasic();
 
   const publishedLessons = lessonsRaw
@@ -160,11 +165,18 @@ export async function learningPathOverviewSvc(user) {
     return buildEmptyLearningPath();
   }
 
-  const lessonIds = publishedLessons.map((lesson) => lesson.lesson_id);
+  const lessonIds = publishedLessons
+    .map((lesson) => Number(lesson.lesson_id))
+    .filter((id) => Number.isFinite(id));
+
+  if (!lessonIds.length) {
+    return buildEmptyLearningPath();
+  }
+
   const [progressRows, quizMap, passedMap] = await Promise.all([
-    listProgressByUser(user.id),
+    listProgressByUser(userId),
     listQuizzesByLessons(lessonIds),
-    listPassedQuizzesForLessons({ lessonIds, userId: user.id, passingScore: PASSING_SCORE })
+    listPassedQuizzesForLessons({ lessonIds, userId, passingScore: PASSING_SCORE })
   ]);
 
   const progressMap = new Map(progressRows.map((row) => [Number(row.lesson_id), row]));

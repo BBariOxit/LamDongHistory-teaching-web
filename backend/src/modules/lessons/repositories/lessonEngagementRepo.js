@@ -69,8 +69,11 @@ export async function listQuizzesByLesson(lessonId) {
 }
 
 export async function listQuizzesByLessons(lessonIds = []) {
-  if (!lessonIds?.length) return new Map();
-  const r = await query('SELECT lesson_id, quiz_id FROM quizzes WHERE lesson_id = ANY($1)', [lessonIds]);
+  const safeIds = (lessonIds || [])
+    .map((id) => Number(id))
+    .filter((id) => Number.isFinite(id));
+  if (!safeIds.length) return new Map();
+  const r = await query('SELECT lesson_id, quiz_id FROM quizzes WHERE lesson_id = ANY($1)', [safeIds]);
   const map = new Map();
   r.rows.forEach(({ lesson_id, quiz_id }) => {
     const key = Number(lesson_id);
@@ -112,7 +115,10 @@ export async function listPassedQuizzesForLesson({ lessonId, userId, passingScor
 }
 
 export async function listPassedQuizzesForLessons({ lessonIds = [], userId, passingScore }) {
-  if (!lessonIds?.length) return new Map();
+  const safeIds = (lessonIds || [])
+    .map((id) => Number(id))
+    .filter((id) => Number.isFinite(id));
+  if (!safeIds.length) return new Map();
   const r = await query(
     `
       SELECT q.lesson_id, qa.quiz_id
@@ -123,7 +129,7 @@ export async function listPassedQuizzesForLessons({ lessonIds = [], userId, pass
         AND qa.score >= $3
       GROUP BY q.lesson_id, qa.quiz_id
     `,
-    [lessonIds, userId, passingScore],
+    [safeIds, userId, passingScore],
   );
   const map = new Map();
   r.rows.forEach(({ lesson_id, quiz_id }) => {
