@@ -175,6 +175,11 @@ const MyLearning = () => {
     };
   }, [learningStats]);
 
+  const nextLessons = useMemo(() => {
+    if (!learningStats || !Array.isArray(learningStats.nextLessons)) return [];
+    return learningStats.nextLessons;
+  }, [learningStats]);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 pb-20 pt-8">
       {/* Background effects */}
@@ -247,6 +252,100 @@ const MyLearning = () => {
             ))}
           </div>
         </div>
+
+        {/* Lộ trình tiếp theo */}
+        {nextLessons.length > 0 && (
+          <div className="mb-10">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">LỘ TRÌNH TIẾP THEO</h2>
+                <p className="text-sm text-slate-600">
+                  Gợi ý những bài học nên bắt đầu hoặc tiếp tục.
+                </p>
+              </div>
+            </div>
+            <ScrollArea className="w-full whitespace-nowrap rounded-3xl border border-slate-100 bg-white/60 p-4 shadow-sm">
+              <div className="flex gap-4">
+                {nextLessons.map((lesson, index) => {
+                  const firstImage = lesson.images?.[0]?.url || lesson.coverImage;
+                  const coverImage = firstImage
+                    ? firstImage.startsWith('data:')
+                      ? firstImage
+                      : resolveAssetUrl(firstImage)
+                    : null;
+                  const progress = clampProgress(lesson.progressPercent ?? lesson.progress ?? 0);
+                  const isCompleted = lesson.status === 'completed';
+                  const isInProgress = lesson.status === 'in-progress';
+                  const actionLabel = isCompleted ? 'Ôn lại' : isInProgress ? 'Tiếp tục' : 'Bắt đầu';
+
+                  return (
+                    <button
+                      key={lesson.lessonId || lesson.slug || index}
+                      onClick={() => navigate(`/lesson/${lesson.slug}`)}
+                      className="group flex w-72 flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg"
+                    >
+                      <div className="relative h-32 w-full overflow-hidden bg-slate-900">
+                        {coverImage ? (
+                          <img
+                            src={coverImage}
+                            alt={lesson.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900">
+                            <BookOpen className="h-10 w-10 text-slate-500" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-3 p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-1">
+                            <p className="line-clamp-2 text-sm font-semibold text-slate-900">
+                              {lesson.title}
+                            </p>
+                            <p className="line-clamp-2 text-xs text-slate-600">
+                              {lesson.summary || 'Tiếp tục hành trình học tập của bạn.'}
+                            </p>
+                          </div>
+                          <Badge className="rounded-full bg-slate-900 text-xs font-medium text-white">
+                            {actionLabel}
+                          </Badge>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs text-slate-500">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              {lesson.duration || '25 phút'}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Users className="h-3.5 w-3.5" />
+                              {Number(lesson.studyCount || 0)} lượt
+                            </span>
+                          </div>
+                          {progress > 0 && (
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between text-[11px]">
+                                <span className="font-semibold text-slate-600">Tiến độ</span>
+                                <span className="font-semibold text-slate-900">{progress}%</span>
+                              </div>
+                              <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                                <div
+                                  className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600"
+                                  style={{ width: `${progress}%` }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
 
         {/* Tiến độ từng phần */}
         <div className="mb-8">

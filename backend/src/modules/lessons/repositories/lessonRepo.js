@@ -38,17 +38,20 @@ export async function getLessonById(id) {
   try {
     const rs = await query('SELECT * FROM lesson_sections WHERE lesson_id=$1 ORDER BY order_index ASC, section_id ASC', [id]);
     lesson.sections = rs.rows || [];
-    // If we have legacy rich HTML content but only a few/placeholder sections, expose the full HTML as a first text section
-    if (lesson.content_html && lesson.sections && lesson.sections.length > 0) {
+    // If we have legacy rich HTML content but chưa có section nào trong DB,
+    // chuyển tạm thành 1 section dạng text để giao diện mới hiển thị và chỉnh sửa.
+    if (lesson.content_html && (!lesson.sections || lesson.sections.length === 0)) {
       const html = String(lesson.content_html || '').trim();
       if (html.length > 50) {
-        const hasLegacy = lesson.sections.some(s => (s.content_html || s.contentHtml || '').includes('<div class="lesson-content"'));
-        if (!hasLegacy) {
-          lesson.sections = [
-            { type: 'text', title: null, content_html: lesson.content_html, data: {}, order_index: 0 },
-            ...lesson.sections
-          ];
-        }
+        lesson.sections = [
+          {
+            type: 'text',
+            title: null,
+            content_html: lesson.content_html,
+            data: {},
+            order_index: 0
+          }
+        ];
       }
     }
   } catch (e) {
@@ -64,16 +67,20 @@ export async function getLessonBySlug(slug) {
   try {
     const rs = await query('SELECT * FROM lesson_sections WHERE lesson_id=$1 ORDER BY order_index ASC, section_id ASC', [lesson.lesson_id]);
     lesson.sections = rs.rows || [];
-    if (lesson.content_html && lesson.sections && lesson.sections.length > 0) {
+    // Tương tự getLessonById: chỉ map content_html sang sections
+    // khi bài học chưa có section nào trong DB.
+    if (lesson.content_html && (!lesson.sections || lesson.sections.length === 0)) {
       const html = String(lesson.content_html || '').trim();
       if (html.length > 50) {
-        const hasLegacy = lesson.sections.some(s => (s.content_html || s.contentHtml || '').includes('<div class="lesson-content"'));
-        if (!hasLegacy) {
-          lesson.sections = [
-            { type: 'text', title: null, content_html: lesson.content_html, data: {}, order_index: 0 },
-            ...lesson.sections
-          ];
-        }
+        lesson.sections = [
+          {
+            type: 'text',
+            title: null,
+            content_html: lesson.content_html,
+            data: {},
+            order_index: 0
+          }
+        ];
       }
     }
   } catch (e) {}
