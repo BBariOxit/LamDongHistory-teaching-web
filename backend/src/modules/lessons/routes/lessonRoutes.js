@@ -6,9 +6,9 @@ const router = Router();
 
 router.get('/', listLessons); // public list (optionally filter published)
 router.get('/slug/:slug', getLessonBySlug); // slug-based fetch
-router.get('/:id', getLesson); // numeric id
+router.get('/:id(\\d+)', getLesson); // numeric id
 router.post('/', verifyAccess, createLesson);
-router.put('/:id', verifyAccess, updateLesson);
-router.delete('/:id', verifyAccess, deleteLesson);
+router.put('/:id(\\d+)', verifyAccess, updateLesson);
+router.delete('/:id(\\d+)', verifyAccess, deleteLesson);
 
 export default router;
