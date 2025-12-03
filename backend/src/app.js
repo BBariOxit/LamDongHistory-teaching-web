@@ -44,8 +44,8 @@ app.use((req, res, next) => {
 // Routes
 app.get('/health', (req, res) => ok(res, { status: 'ok', timestamp: new Date() }));
 app.use('/api/auth', authRoutes);
+app.use('/api/lessons', lessonEngagementRoutes); // nested engagement endpoints first to avoid conflicts
 app.use('/api/lessons', lessonRoutes);
-app.use('/api/lessons', lessonEngagementRoutes); // nested engagement endpoints
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/analytics', analyticsRoutes);
