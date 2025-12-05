@@ -25,7 +25,7 @@ export const LESSON_SECTIONS = [
     accent: 'from-violet-500 via-purple-500 to-fuchsia-500',
     badgeColor: 'text-violet-600 bg-violet-100',
     icon: 'Sparkles',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     id: 'overview',
