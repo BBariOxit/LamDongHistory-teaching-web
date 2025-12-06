@@ -38,6 +38,25 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
 const QUIZ_PASSING_SCORE = 70;
 
+const buildHeroFallbackImage = (label = 'Bài học') => {
+  const encoded = encodeURIComponent(label);
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600'>
+  <defs>
+    <linearGradient id='hero-gradient' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#0ea5e9'/>
+      <stop offset='100%' stop-color='#6366f1'/>
+    </linearGradient>
+  </defs>
+  <rect width='1200' height='600' rx='32' fill='url(#hero-gradient)'/>
+  <text x='50%' y='50%' dy='0.35em' text-anchor='middle' font-family='Inter, -apple-system, system-ui, sans-serif'
+    font-size='48' font-weight='600' fill='#ffffff'>
+    ${encoded}
+  </text>
+</svg>`;
+  return `data:image/svg+xml;utf8,${svg}`;
+};
+
 const LessonDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -574,6 +593,11 @@ const LessonDetail = () => {
                   'w-full rounded-[28px] object-cover shadow-smooth',
                   idx === 0 ? 'h-72 sm:col-span-2' : 'h-64'
                 )}
+                loading="lazy"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = buildHeroFallbackImage(lesson.title);
+                }}
               />
             ))}
           </div>
@@ -720,7 +744,7 @@ function extractHeroImages(lesson) {
   if (!lesson?.images?.length) return [];
   const galleryUrls = new Set();
   (lesson.sections || []).forEach((section) => {
-    if (section.type === 'image_gallery') {
+    if (section.type === 'image_gallery' || section.type === 'vr_image') {
       (section.data?.images || []).forEach((img) => {
         if (img?.url) galleryUrls.add(img.url);
       });
@@ -804,6 +828,44 @@ function renderSectionBody(section) {
             </div>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (section.type === 'vr_image' && Array.isArray(section.data?.images)) {
+    const img = section.data.images[0];
+    if (!img) return null;
+    const thumbUrl = img.url;
+    // Nếu có viewerUrl thì dùng, nếu không sẽ mở chính ảnh pano (phóng to)
+    const viewerUrl = img.viewerUrl || img.url;
+    const handleClick = () => {
+      if (viewerUrl) {
+        window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+      }
+    };
+    return (
+      <div className="space-y-3">
+        {section.title && <h4 className="text-xl font-semibold text-slate-900">{section.title}</h4>}
+        <div
+          className="group relative cursor-pointer overflow-hidden rounded-3xl border border-slate-200 bg-slate-900/80"
+          onClick={handleClick}
+        >
+          <img
+            src={resolveAssetUrl(thumbUrl)}
+            alt={img.caption || 'Ảnh VR 360°'}
+            className="h-72 w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center text-slate-50">
+            <div className="inline-flex items-center gap-2 rounded-full bg-black/50 px-4 py-1 text-xs font-semibold uppercase tracking-wide">
+              <span>VR 360°</span>
+            </div>
+            <p className="max-w-xl text-sm font-medium text-slate-100">
+              Nhấn để mở chế độ xem toàn màn hình và trải nghiệm ảnh 360°.
+            </p>
+          </div>
+        </div>
+        {img.caption && <p className="text-sm text-slate-500">{img.caption}</p>}
       </div>
     );
   }

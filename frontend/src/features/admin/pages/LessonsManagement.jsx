@@ -73,6 +73,12 @@ const SECTION_PRESETS = [
     accent: 'from-pink-500 to-rose-500'
   },
   {
+    type: 'vr_image',
+    label: 'Ảnh VR 360°',
+    description: 'Nhúng ảnh VR / pano 360° (hoặc link viewer).',
+    accent: 'from-emerald-500 to-cyan-500'
+  },
+  {
     type: 'video',
     label: 'Video / Embed',
     description: 'Nhúng video YouTube, Vimeo hoặc file mp4.',
@@ -491,6 +497,8 @@ const LessonsManagement = () => {
         return { type, title: '', contentHtml: '<p>Nội dung chính...</p>', orderIndex };
       case 'image_gallery':
         return { type, title: '', data: { images: [] }, orderIndex };
+      case 'vr_image':
+        return { type, title: 'Ảnh VR 360°', data: { images: [] }, orderIndex };
       case 'video':
         return { type, title: '', data: { url: '', description: '' }, orderIndex };
       case 'divider':
@@ -1158,12 +1166,12 @@ const LessonsManagement = () => {
                                 </>
                               )}
 
-                              {section.type === 'image_gallery' && (
+                              {(section.type === 'image_gallery' || section.type === 'vr_image') && (
                                 <>
                                   <Input
                                     value={section.title || ''}
                                     onChange={(e) => updateSection(idx, { title: e.target.value })}
-                                    placeholder="Tiêu đề thư mục ảnh (tuỳ chọn)"
+                                    placeholder={section.type === 'vr_image' ? 'Tiêu đề ảnh VR (tuỳ chọn)' : 'Tiêu đề thư mục ảnh (tuỳ chọn)'}
                                   />
                                   <div className="grid gap-3 sm:grid-cols-2">
                                     {(section.data?.images || []).map((img, imageIdx) => (

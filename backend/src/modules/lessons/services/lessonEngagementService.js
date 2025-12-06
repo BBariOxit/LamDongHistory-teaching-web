@@ -96,28 +96,53 @@ export async function removeBookmarkSvc(lessonId, user){ if(!user) throw new Err
 export async function listBookmarksSvc(user){ if(!user) throw new Error('Unauthorized'); return listBookmarks(user.id); }
 
 export async function listProgressForUserSvc(user){
-  if(!user) throw new Error('Unauthorized');
-  const rows = await listProgressByUser(user.id);
-  if (!rows.length) return rows;
-  const lessonIds = rows.map((row) => Number(row.lesson_id));
-  const quizMap = await listQuizzesByLessons(lessonIds);
-  const passedMap = await listPassedQuizzesForLessons({ lessonIds, userId: user.id, passingScore: PASSING_SCORE });
-  return rows.map((row) => {
-    const lessonId = Number(row.lesson_id);
-    const quizIds = quizMap.get(lessonId) || [];
-    if (!quizIds.length) return row;
-    const passedIds = new Set((passedMap.get(lessonId) || []).map(Number));
-    const allDone = quizIds.every((id) => passedIds.has(Number(id)));
-    const quizProgress = Math.round((passedIds.size / quizIds.length) * 100);
-    let progressValue = Math.max(Number(row.progress ?? 0), quizProgress);
-    if (!allDone && progressValue >= 100) progressValue = 99;
-    return {
-      ...row,
-      progress: allDone ? 100 : progressValue,
-      is_completed: allDone,
-    };
-  });
-}
+    if(!user) throw new Error('Unauthorized');
+    const rows = await listProgressByUser(user.id);
+    if (!rows.length) return rows;
+
+    const lessonIds = rows.map((row) => Number(row.lesson_id));
+    const quizMap = await listQuizzesByLessons(lessonIds);
+    const passedMap = await listPassedQuizzesForLessons({ lessonIds, userId: user.id, passingScore: PASSING_SCORE });
+
+    return rows.map((row) => {
+      const lessonId = Number(row.lesson_id);
+      const quizIds = quizMap.get(lessonId) || [];
+      if (!quizIds.length) return row;
+
+      const passedIds = new Set((passedMap.get(lessonId) || []).map(Number));
+      const totalQuizzes = quizIds.length;
+      const passedQuizzes = passedIds.size;
+
+      // Trạng thái/progress cho API /lessons/me/progress:
+      // - Chưa hoàn thành bài kiểm tra nào  -> progress = 0, is_completed = false
+      // - Hoàn thành ít nhất 1 bài nhưng chưa hết -> progress = % số quiz đã qua
+      // - Hoàn thành tất cả bài kiểm tra -> progress = 100, is_completed = true
+      if (totalQuizzes > 0) {
+        if (passedQuizzes >= totalQuizzes) {
+          return {
+            ...row,
+            progress: 100,
+            is_completed: true
+          };
+        }
+        if (passedQuizzes > 0) {
+          const quizPercent = Math.round((passedQuizzes / totalQuizzes) * 100);
+          return {
+            ...row,
+            progress: quizPercent,
+            is_completed: false
+          };
+        }
+        return {
+          ...row,
+          progress: 0,
+          is_completed: false
+        };
+      }
+
+      return row;
+    });
+  }
 
 // STUDY SESSIONS
 export async function recordStudySessionSvc(lessonId) {
@@ -194,18 +219,23 @@ export async function learningPathOverviewSvc(user) {
     let status = 'not-started';
 
     if (totalQuizzes > 0) {
+      // Trạng thái dựa hoàn toàn vào số bài kiểm tra đã hoàn thành:
+      // - Chưa hoàn thành bài nào  -> 'not-started' (mới)
+      // - Hoàn thành ít nhất 1 bài -> 'in-progress' (đang học)
+      // - Hoàn thành tất cả        -> 'completed' (hoàn thành)
       const quizPercent = Math.round((passedQuizzes / totalQuizzes) * 100);
-      progressPercent = quizPercent;
-      if (passedQuizzes >= totalQuizzes) {
+      if (passedQuizzes >= totalQuizzes && totalQuizzes > 0) {
         status = 'completed';
         progressPercent = 100;
       } else if (passedQuizzes > 0) {
         status = 'in-progress';
-      } else if (storedProgress > 0) {
-        status = storedProgress >= 100 ? 'completed' : 'in-progress';
-        progressPercent = storedProgress;
+        progressPercent = quizPercent;
+      } else {
+        status = 'not-started';
+        progressPercent = 0;
       }
     } else {
+      // Bài học không có bài kiểm tra: giữ nguyên logic cũ dựa vào progress lưu trữ
       if (progressRow?.is_completed || storedProgress >= 100) {
         status = 'completed';
         progressPercent = 100;

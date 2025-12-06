@@ -17,7 +17,7 @@ const createSchema = Joi.object({
     caption: Joi.string().allow('', null)
   })).default([]),
   sections: Joi.array().items(Joi.object({
-    type: Joi.string().valid('heading','text','image_gallery','video','embed','divider').default('text'),
+    type: Joi.string().valid('heading','text','image_gallery','vr_image','video','embed','divider').default('text'),
     title: Joi.string().allow('', null),
     contentHtml: Joi.string().allow('', null),
     data: Joi.object().default({}),

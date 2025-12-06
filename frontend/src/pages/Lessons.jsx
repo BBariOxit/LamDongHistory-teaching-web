@@ -132,6 +132,29 @@ const extractMinutes = (lessons = []) =>
 const isValidImage = (url) =>
   typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('data:'));
 
+const filterLessonsBySection = (sectionId, allLessons = []) => {
+  if (!sectionId) return [];
+  if (!Array.isArray(allLessons)) return [];
+
+  if (sectionId === 'landmarks') {
+    return allLessons.filter((lesson) => {
+      const tags = Array.isArray(lesson.tags) ? lesson.tags : [];
+      const category = (lesson.category || '').trim();
+      return tags.includes('Địa danh') || category === 'Lịch sử địa phương';
+    });
+  }
+
+  if (sectionId === 'figures') {
+    return allLessons.filter(
+      (lesson) =>
+        lesson.category === 'Nhân vật lịch sử' ||
+        (Array.isArray(lesson.tags) && (lesson.tags.includes('Nhân vật lịch sử') || lesson.tags.includes('Nhân vật'))),
+    );
+  }
+
+  return [];
+};
+
 const Lessons = () => {
   const navigate = useNavigate();
   const { sectionId } = useParams();
@@ -243,7 +266,10 @@ const Lessons = () => {
 
   const overviewSections = useMemo(() =>
     LESSON_SECTIONS.map((section) => {
-      const source = section.id === 'landmarks' ? lessons : SAMPLE_LESSONS[section.id] || [];
+      const source =
+        section.id === 'overview'
+          ? SAMPLE_LESSONS[section.id] || []
+          : filterLessonsBySection(section.id, lessons);
       const minutes = extractMinutes(source);
       const ratingValues = source.map((item) => ensureRatingValue(item.rating));
       const rating = ratingValues.length
@@ -262,16 +288,16 @@ const Lessons = () => {
 
   const sectionLessons = useMemo(() => {
     if (!activeSection) return [];
-    if (activeSection.id === 'landmarks') return lessons;
-    return (SAMPLE_LESSONS[activeSection.id] || []).map((item) => ({
-      ...item,
-      coverImage: item.coverImage || fallbackImage(item.title),
-      images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [{ url: fallbackImage(item.title) }],
-      rating: formatRating(item.rating),
-      progress: Number(item.progress ?? 0),
-      isCompleted: Boolean(item.isCompleted),
-      bestScore: Number(item.bestScore ?? 0),
-      isSample: true,
+    const filtered = filterLessonsBySection(activeSection.id, lessons);
+    return filtered.map((lesson) => ({
+      ...lesson,
+      coverImage: lesson.coverImage || fallbackImage(lesson.title, activeSection.id),
+      images:
+        Array.isArray(lesson.images) && lesson.images.length > 0
+          ? lesson.images
+          : [{ url: fallbackImage(lesson.title, activeSection.id) }],
+      rating: formatRating(lesson.rating),
+      isSample: false,
     }));
   }, [activeSection, lessons]);
 
@@ -289,10 +315,6 @@ const Lessons = () => {
   }, [sectionLessons, searchTerm, difficultyFilter]);
 
   const filteredLessons = useMemo(() => {
-    if (activeSection?.id !== 'landmarks') {
-      return statusFilter === 'all' ? baseFilteredLessons : [];
-    }
-
     if (statusFilter === 'all') return baseFilteredLessons;
 
     return baseFilteredLessons.filter((lesson) => {
@@ -319,10 +341,6 @@ const Lessons = () => {
       completed: 0,
       saved: 0,
     };
-
-    if (activeSection?.id !== 'landmarks') {
-      return counts;
-    }
 
     baseFilteredLessons.forEach((lesson) => {
       if (lesson.progress > 0 && !lesson.isCompleted) counts['in-progress'] += 1;
@@ -583,8 +601,8 @@ const Lessons = () => {
 
   const Icon = ICON_MAP[activeSection.id] || Layers;
   const gradient = activeSection.accent ? `bg-gradient-to-br ${activeSection.accent}` : 'bg-gradient-to-br from-slate-600 to-slate-800';
-  const showStatusFilters = activeSection.id === 'landmarks';
-  const showBookmarks = activeSection.id === 'landmarks';
+  const showStatusFilters = activeSection.id === 'landmarks' || activeSection.id === 'figures';
+  const showBookmarks = activeSection.id === 'landmarks' || activeSection.id === 'figures';
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-white via-blue-50/20 to-slate-50 pb-24 pt-12">
@@ -892,16 +910,16 @@ const LessonCard = ({ lesson, onOpen, showBookmark, bookmarked, onBookmarkToggle
       </div>
 
       {/* Content Section - Flex with fixed structure */}
-      <div className="flex flex-1 flex-col p-6">
-        {/* Title - Fixed 2 lines */}
-        <h3 className="mb-3 h-14 text-lg font-bold leading-tight text-slate-900 line-clamp-2">
-          {lesson.title}
-        </h3>
-
-        {/* Description - Fixed 3 lines max */}
-        <p className="mb-4 h-[4.5rem] text-sm leading-relaxed text-slate-600 line-clamp-3">
-          {lesson.summary}
-        </p>
+          <div className="flex flex-1 flex-col p-6">
+            {/* Title - 1 dòng, quá dài thì dùng "..." */}
+            <h3 className="mb-3 h-14 w-full overflow-hidden text-ellipsis whitespace-nowrap text-lg font-bold leading-tight text-slate-900">
+              {lesson.title}
+            </h3>
+ 
+          {/* Description - tối đa 2–3 dòng, cắt bớt bằng "..." */}
+          <p className="mb-4 h-[4.5rem] text-sm leading-relaxed text-slate-600 line-clamp-3">
+            {lesson.summary}
+          </p>
 
         {/* Stats Row - Fixed height */}
         <div className="mb-4 flex h-5 items-center gap-4 text-xs text-slate-500">
