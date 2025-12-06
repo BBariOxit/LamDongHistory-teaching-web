@@ -83,6 +83,216 @@ const QUIZ_BANK = [
       { q: 'Một vai trò chiến lược của Bảo Lộc trong cơ cấu tỉnh?', options: ['Giảm áp lực dân cư Đà Lạt', 'Xóa bỏ giao thông', 'Thay thế Đà Lạt', 'Đóng cửa sân bay'], correct: 0 },
       { q: 'Giai đoạn nào hình thành mạnh mẽ đồn điền chè?', options: ['1950–1975', '1975–1985', '1990–2000', '2005–2015'], correct: 0 }
     ]
+  },
+  // Quiz mới cho các địa danh cụ thể
+  {
+    slug: 'ho-xuan-huong-lich-su',
+    meta: {
+      title: 'Quiz: Hồ Xuân Hương',
+      description: 'Lịch sử hồ nhân tạo trung tâm Đà Lạt',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Hồ Xuân Hương hình thành từ việc can thiệp vào con suối nào?',
+        options: ['Suối Cam Ly', 'Suối Đa Nhim', 'Suối Đa Mê', 'Suối Đa Tam'],
+        correct: 0
+      },
+      {
+        q: 'Vai trò nổi bật của Hồ Xuân Hương đối với Đà Lạt hiện nay là gì?',
+        options: [
+          'Trung tâm cảnh quan và sinh hoạt cộng đồng',
+          'Khu công nghiệp nặng',
+          'Cảng biển lớn',
+          'Mỏ khai thác khoáng sản'
+        ],
+        correct: 0
+      },
+      {
+        q: 'Tên “Hồ Xuân Hương” gợi liên tưởng đến yếu tố văn hóa nào?',
+        options: ['Một nữ sĩ trong văn học Việt Nam', 'Tên một vị vua triều Nguyễn', 'Tên một vị tướng thời Tây Sơn', 'Tên một nhà bác học'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'nha-tho-con-ga-da-lat',
+    meta: {
+      title: 'Quiz: Nhà thờ Con Gà',
+      description: 'Lịch sử nhà thờ chính tòa Đà Lạt',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Nhà thờ Con Gà là tên gọi dân gian của công trình nào?',
+        options: ['Nhà thờ Chính tòa Đà Lạt', 'Nhà thờ Domaine de Marie', 'Nhà thờ Cam Ly', 'Nhà thờ Lộc Phát'],
+        correct: 0
+      },
+      {
+        q: 'Biểu tượng con gà đặt ở đâu trên nhà thờ?',
+        options: ['Trên đỉnh tháp chuông', 'Trên nóc nhà ngang', 'Giữa sân nhà thờ', 'Trên hàng rào phía trước'],
+        correct: 0
+      },
+      {
+        q: 'Phong cách kiến trúc của nhà thờ Con Gà gắn với giai đoạn nào?',
+        options: ['Đầu thế kỷ XX', 'Thời kỳ Lý – Trần', 'Thời Nguyễn sơ', 'Sau năm 2000'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'ga-da-lat-lich-su',
+    meta: {
+      title: 'Quiz: Ga Đà Lạt',
+      description: 'Tuyến đường sắt răng cưa và di sản kiến trúc',
+      difficulty: 'Trung bình',
+      time_limit: 10
+    },
+    questions: [
+      {
+        q: 'Ga Đà Lạt gắn với loại tuyến đường sắt đặc biệt nào?',
+        options: ['Đường sắt răng cưa', 'Đường sắt trên cao', 'Đường sắt ngầm', 'Đường sắt đơn khổ hẹp không răng cưa'],
+        correct: 0
+      },
+      {
+        q: 'Ba chóp nhọn ở mặt đứng ga Đà Lạt được xem là gợi hình cho địa danh nào?',
+        options: ['Lang Biang', 'Hòn Bà', 'Bà Nà', 'Fansipan'],
+        correct: 0
+      },
+      {
+        q: 'Ngày nay tuyến đường sắt tại ga Đà Lạt chủ yếu phục vụ mục đích gì?',
+        options: ['Du lịch tham quan', 'Vận chuyển than', 'Vận tải hàng hóa nặng', 'Đường sắt quốc tế'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'truong-cao-dang-su-pham-da-lat-lich-su',
+    meta: {
+      title: 'Quiz: Trường CĐSP Đà Lạt',
+      description: 'Từ Lycée Yersin đến trường đào tạo giáo viên',
+      difficulty: 'Trung bình',
+      time_limit: 10
+    },
+    questions: [
+      {
+        q: 'Tên gọi ban đầu của khu trường Cao đẳng Sư phạm Đà Lạt thời Pháp là gì?',
+        options: ['Lycée Yersin', 'Lycée Pétrus Ký', 'Collège Chasseloup-Laubat', 'Lycée Marie Curie'],
+        correct: 0
+      },
+      {
+        q: 'Sau năm 1975, chức năng chính của khu trường là gì?',
+        options: ['Đào tạo giáo viên cho Lâm Đồng', 'Nhà máy công nghiệp', 'Bệnh viện đa khoa', 'Trung tâm thương mại'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'dinh-iii-bao-dai-da-lat',
+    meta: {
+      title: 'Quiz: Dinh III Bảo Đại',
+      description: 'Biệt điện mùa hè trên đồi thông',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Dinh III gắn với nhân vật lịch sử nào?',
+        options: ['Vua Bảo Đại', 'Vua Minh Mạng', 'Vua Gia Long', 'Vua Duy Tân'],
+        correct: 0
+      },
+      {
+        q: 'Chức năng chính của Dinh III thời Bảo Đại là gì?',
+        options: ['Biệt điện nghỉ hè và làm việc', 'Pháo đài quân sự', 'Nhà máy dệt', 'Nhà ga đường sắt'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'ho-tuyen-lam-lich-su',
+    meta: {
+      title: 'Quiz: Hồ Tuyền Lâm',
+      description: 'Không gian hồ nhân tạo và sinh thái phía Nam Đà Lạt',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Hồ Tuyền Lâm được hình thành chủ yếu nhờ công trình nào?',
+        options: ['Đập đầu nguồn tạo hồ nhân tạo', 'Đào hồ tự nhiên', 'Mở rộng sông biển', 'Đắp đê biển'],
+        correct: 0
+      },
+      {
+        q: 'Hồ Tuyền Lâm nằm ở khu vực nào so với trung tâm Đà Lạt?',
+        options: ['Phía Nam thành phố', 'Giữa trung tâm', 'Phía Bắc giáp Lạc Dương', 'Giáp Bảo Lộc'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'thien-vien-truc-lam-da-lat',
+    meta: {
+      title: 'Quiz: Thiền viện Trúc Lâm',
+      description: 'Trung tâm Phật giáo gắn với hồ Tuyền Lâm',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Thiền viện Trúc Lâm Đà Lạt thuộc dòng Thiền nào?',
+        options: ['Trúc Lâm Yên Tử', 'Thiền Tào Động', 'Thiền Lâm Tế', 'Thiền Tịnh độ tông'],
+        correct: 0
+      },
+      {
+        q: 'Thiền viện Trúc Lâm Đà Lạt nằm gần địa danh thiên nhiên nào?',
+        options: ['Hồ Tuyền Lâm', 'Hồ Xuân Hương', 'Thác Pongour', 'Thác Prenn'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'khu-hoa-binh-cho-da-lat-lich-su',
+    meta: {
+      title: 'Quiz: Khu Hòa Bình – Chợ Đà Lạt',
+      description: 'Lịch sử trung tâm thương mại của thành phố',
+      difficulty: 'Trung bình',
+      time_limit: 10
+    },
+    questions: [
+      {
+        q: 'Khu Hòa Bình – Chợ Đà Lạt giữ vai trò gì trong cấu trúc đô thị?',
+        options: ['Trung tâm thương mại và giao lưu', 'Khu công nghiệp nặng', 'Căn cứ quân sự', 'Khu bảo tồn rừng'],
+        correct: 0
+      },
+      {
+        q: 'Đặc điểm không gian nào làm nên hình ảnh đặc trưng của khu chợ Đà Lạt?',
+        options: ['Các bậc thang và phố dốc bao quanh', 'Đường hầm dưới biển', 'Đê chắn sóng', 'Cánh đồng lúa rộng lớn'],
+        correct: 0
+      }
+    ]
+  },
+  {
+    slug: 'thac-dambri-lich-su',
+    meta: {
+      title: 'Quiz: Thác Dambri',
+      description: 'Từ truyền thuyết đến khu du lịch',
+      difficulty: 'Cơ bản',
+      time_limit: 8
+    },
+    questions: [
+      {
+        q: 'Theo truyền thuyết, tên “Dambri” gắn với ý nghĩa nào?',
+        options: ['Sự chờ đợi', 'Sự chiến thắng', 'Sự giàu có', 'Sự căm giận'],
+        correct: 0
+      },
+      {
+        q: 'Thác Dambri nằm gần đô thị nào của Lâm Đồng?',
+        options: ['Thành phố Bảo Lộc', 'Thành phố Đà Lạt', 'Huyện Lạc Dương', 'Huyện Cát Tiên'],
+        correct: 0
+      }
+    ]
   }
 ];
 

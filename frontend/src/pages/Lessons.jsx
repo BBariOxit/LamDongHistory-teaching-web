@@ -137,7 +137,11 @@ const filterLessonsBySection = (sectionId, allLessons = []) => {
   if (!Array.isArray(allLessons)) return [];
 
   if (sectionId === 'landmarks') {
-    return allLessons.filter((lesson) => Array.isArray(lesson.tags) && lesson.tags.includes('Địa danh'));
+    return allLessons.filter((lesson) => {
+      const tags = Array.isArray(lesson.tags) ? lesson.tags : [];
+      const category = (lesson.category || '').trim();
+      return tags.includes('Địa danh') || category === 'Lịch sử địa phương';
+    });
   }
 
   if (sectionId === 'figures') {

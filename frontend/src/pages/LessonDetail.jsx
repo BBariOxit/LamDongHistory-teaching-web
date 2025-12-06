@@ -38,6 +38,25 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
 const QUIZ_PASSING_SCORE = 70;
 
+const buildHeroFallbackImage = (label = 'Bài học') => {
+  const encoded = encodeURIComponent(label);
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600'>
+  <defs>
+    <linearGradient id='hero-gradient' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#0ea5e9'/>
+      <stop offset='100%' stop-color='#6366f1'/>
+    </linearGradient>
+  </defs>
+  <rect width='1200' height='600' rx='32' fill='url(#hero-gradient)'/>
+  <text x='50%' y='50%' dy='0.35em' text-anchor='middle' font-family='Inter, -apple-system, system-ui, sans-serif'
+    font-size='48' font-weight='600' fill='#ffffff'>
+    ${encoded}
+  </text>
+</svg>`;
+  return `data:image/svg+xml;utf8,${svg}`;
+};
+
 const LessonDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -574,6 +593,11 @@ const LessonDetail = () => {
                   'w-full rounded-[28px] object-cover shadow-smooth',
                   idx === 0 ? 'h-72 sm:col-span-2' : 'h-64'
                 )}
+                loading="lazy"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = buildHeroFallbackImage(lesson.title);
+                }}
               />
             ))}
           </div>

@@ -224,13 +224,20 @@ export async function deleteQuizSvc(quizId, user) {
 }
 
 export async function listQuizzesSvc(params, user) {
-  // Admin sees all, Teacher sees own quizzes
+  // Admin: thấy tất cả
+  // Teacher: mặc định thấy tất cả (chỉ sửa/xóa được bài mình tạo),
+  //          nếu truyền createdBy trong query thì mới lọc theo người tạo.
   const filters = { ...params };
-  
-  if (user && (user.role || '').toLowerCase() === 'teacher') {
-    filters.createdBy = user.id;
+  const role = (user?.role || '').toLowerCase();
+
+  if (role === 'teacher') {
+    if (filters.createdBy != null) {
+      filters.createdBy = user.id;
+    } else {
+      delete filters.createdBy;
+    }
   }
-  
+
   return listQuizzes(filters);
 }
 

@@ -377,9 +377,9 @@ const MyLearning = () => {
               return (
                 <Card
                   key={section.id}
-                  className="group overflow-hidden border-2 border-slate-200 bg-white transition-all hover:border-slate-300 hover:shadow-lg"
+                  className="group flex h-full flex-col overflow-hidden border-2 border-slate-200 bg-white transition-all hover:border-slate-300 hover:shadow-lg"
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="flex h-full flex-col p-6">
                     <div className="mb-4 flex items-start justify-between">
                       <div className={cn('flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg', gradient)}>
                         <SectionIcon className="h-7 w-7 text-white" />
@@ -390,7 +390,7 @@ const MyLearning = () => {
                         </Badge>
                       )}
                     </div>
-                    <div className="space-y-3">
+                    <div className="flex flex-1 flex-col space-y-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Phần học</p>
                         <h3 className="mt-1 text-lg font-bold text-slate-900">{section.title}</h3>
@@ -409,7 +409,7 @@ const MyLearning = () => {
                       </div>
                       <div className="border-t border-slate-100 pt-3">
                         <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">GỢI Ý TIẾP THEO</p>
-                        <p className="mt-1 text-sm font-medium text-slate-700">
+                        <p className="mt-1 line-clamp-2 text-sm font-medium text-slate-700">
                           {section.highlightLesson?.title || 'Chưa bắt đầu'}
                         </p>
                         {section.highlightLesson && (
@@ -421,7 +421,7 @@ const MyLearning = () => {
                       {!isComingSoon && section.highlightLesson && (
                         <Button
                           size="sm"
-                          className="w-full rounded-lg bg-slate-900 hover:bg-slate-800"
+                          className="mt-auto w-full rounded-lg bg-slate-900 hover:bg-slate-800"
                           onClick={() => navigate(`/lesson/${section.highlightLesson.slug}`)}
                         >
                           {section.highlightLesson.status === 'in-progress' ? 'Tiếp tục' : 'Bắt đầu'}
