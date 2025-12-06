@@ -910,16 +910,16 @@ const LessonCard = ({ lesson, onOpen, showBookmark, bookmarked, onBookmarkToggle
       </div>
 
       {/* Content Section - Flex with fixed structure */}
-      <div className="flex flex-1 flex-col p-6">
-        {/* Title - Fixed 2 lines */}
-        <h3 className="mb-3 h-14 text-lg font-bold leading-tight text-slate-900 line-clamp-2">
-          {lesson.title}
-        </h3>
-
-        {/* Description - Fixed 3 lines max */}
-        <p className="mb-4 h-[4.5rem] text-sm leading-relaxed text-slate-600 line-clamp-3">
-          {lesson.summary}
-        </p>
+          <div className="flex flex-1 flex-col p-6">
+            {/* Title - 1 dòng, quá dài thì dùng "..." */}
+            <h3 className="mb-3 h-14 w-full overflow-hidden text-ellipsis whitespace-nowrap text-lg font-bold leading-tight text-slate-900">
+              {lesson.title}
+            </h3>
+ 
+          {/* Description - tối đa 2–3 dòng, cắt bớt bằng "..." */}
+          <p className="mb-4 h-[4.5rem] text-sm leading-relaxed text-slate-600 line-clamp-3">
+            {lesson.summary}
+          </p>
 
         {/* Stats Row - Fixed height */}
         <div className="mb-4 flex h-5 items-center gap-4 text-xs text-slate-500">

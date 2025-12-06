@@ -608,12 +608,12 @@ const LessonCard = ({ lesson, index, onOpen }) => {
 
       {/* Content section */}
       <div className="flex flex-1 flex-col gap-3 p-5">
-        {/* Title */}
-        <h3 className="line-clamp-2 text-base font-bold leading-snug text-slate-900">
+        {/* Title – 1 dòng, quá dài thì "..." */}
+        <h3 className="block w-full overflow-hidden text-ellipsis whitespace-nowrap text-base font-bold leading-snug text-slate-900">
           {lesson.title}
         </h3>
 
-        {/* Description */}
+        {/* Description – giới hạn 2 dòng và cắt bằng "..." khi tràn */}
         <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
           {lesson.summary || 'Cùng tìm hiểu về lịch sử lâm đồng'}
         </p>
